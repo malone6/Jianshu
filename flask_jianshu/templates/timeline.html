@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <title>我在简书</title>
+    <script type="text/javascript" src="../static/js/echarts.js"></script>
+    <link rel="stylesheet" href="../static/css/jquery.fullPage.css">
+    <script type="text/javascript" src="../static/js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="../static/js/jquery.fullPage.js"></script>
+    <script type="text/javascript" src="../static/js/echarts-wordcloud.min.js"></script>
+    <script>
+    $(function(){
+        $('#dowebok').fullpage({
+            sectionsColor:'#666666'
+        });
+    });
+    </script>
+
+</head>
+
+<body>
+<div id="dowebok">
+
+    <div class="section" id="base_info">
+        <div align="center" >
+            <img id="head_pic" src={{ baseinfo['head_pic'] }} width="168" height="168">
+            <p>您好！&nbsp;<strong style="color:#FA8072">{{ baseinfo['nickname'] }}</strong></p>
+            <p>截止至&nbsp;<b style="color:#FA8072">{{ baseinfo['update_time'] }}</b></p>
+            <p>您在简书关注了<b style="color:#FA8072">{{ baseinfo['like_users_num'] }}</b>个用户，
+                拥有粉丝<b style="color:#FA8072">{{ baseinfo['followers_num'] }}</b>个。</p>
+            <p>发表文章<b style="color:#FA8072">{{ baseinfo['share_notes_num'] }}</b>篇，
+                写下文字<b style="color:#FA8072">{{ baseinfo['words_num'] }}</b>个，
+                文章收获喜欢<b style="color:#FA8072">{{ baseinfo['be_liked_num'] }}</b>个,
+                喜欢文章<b style="color:#FA8072">{{ baseinfo['like_notes_num'] }}</b>篇</p>
+            <p>关注专题<b style="color:#FA8072">{{ baseinfo['like_colls_num'] }}</b>个，
+            关注文集<b style="color:#FA8072">{{ baseinfo['like_nbs_num'] }}</b>个。</p>
+            <p>发表评论<b style="color:#FA8072">{{ baseinfo['comment_notes_num'] }}</b>次，
+            点赞别人评论<b style="color:#FA8072">{{ baseinfo['like_comments_num'] }}</b>次。</p>
+            <p>打赏文章<b style="color:#FA8072">{{ baseinfo['reward_notes_num'] }}</b>次</p>
+        </div>
+    </div>
+
+    <div class="section" id="firt_tag_time">
+        <div align="center" >
+            <h3>加入简书以来的第一次</h3><br><br>
+            <p>您于<b style="color:#FA8072">{{ first_tag_time['join_time'] }}</b> 注册，加入简书</p>
+        {% if first_tag_time['first_like_user'] %}
+            <p>
+                <b style="color:#FA8072">{{ first_tag_time['first_like_user']['time']|safe }}</b>
+                &nbsp;
+                <a href="http://www.jianshu.com/u/{{ first_tag_time['first_like_user']['slug']|safe }}" target="_blank">第一次关注用户</a>
+            </p>
+        {% endif %}
+        {% if first_tag_time['first_share_note'] %}
+            <p>
+                <b style="color:#FA8072">{{ first_tag_time['first_share_note']['time']|safe }}</b>
+                &nbsp;
+                <a href="http://www.jianshu.com/p/{{ first_tag_time['first_share_note']['note_id']|safe }}" target="_blank">第一次发表文章</a>
+            </p>
+        {% endif %}
+        {% if first_tag_time['first_like_note'] %}
+            <p>
+                <b style="color:#FA8072">{{ first_tag_time['first_like_note']['time']|safe }}</b>
+                &nbsp;
+                <a href="http://www.jianshu.com/p/{{ first_tag_time['first_like_note']['note_id']|safe }}" target="_blank">第一次喜欢文章</a>
+            </p>
+        {% endif %}
+        {% if first_tag_time['first_like_coll'] %}
+            <p>
+                <b style="color:#FA8072">{{ first_tag_time['first_like_coll']['time']|safe }}</b>
+                &nbsp;
+                <a href="http://www.jianshu.com/c/{{ first_tag_time['first_like_coll']['coll_id']|safe }}" target="_blank">第一次关注专题</a>
+            </p>
+        {% endif %}
+            {% if first_tag_time['first_like_nb'] %}
+            <p>
+                <b style="color:#FA8072">{{ first_tag_time['first_like_nb']['time']|safe }}</b>
+                &nbsp;
+                <a href="http://www.jianshu.com/nb/{{ first_tag_time['first_like_nb']['notebook_id']|safe }}" target="_blank">第一次关注文集</a>
+            </p>
+        {% endif %}
+        {% if first_tag_time['first_comment'] %}
+            <p>
+                <b style="color:#FA8072">{{ first_tag_time['first_comment']['time']|safe }}</b>
+                &nbsp;第一次发表评论:
+                <a href="http://www.jianshu.com/p/{{ first_tag_time['first_comment']['note_id']|safe }}" target="_blank">{{ first_tag_time['first_comment']['comment_text']|safe }}</a>
+            </p>
+        {% endif %}
+        {% if first_tag_time['first_like_comment'] %}
+            <p>
+                <b style="color:#FA8072">{{ first_tag_time['first_like_comment']['time']|safe }}</b>
+                &nbsp;第一次赞了评论:
+                <a href="http://www.jianshu.com/p/{{ first_tag_time['first_like_comment']['note_id']|safe }}" target="_blank">{{ first_tag_time['first_like_comment']['comment_text']|safe }}</a>
+            </p>
+        {% endif %}
+        {% if first_tag_time['first_reward_note'] %}
+            <p>
+                <b style="color:#FA8072">{{ first_tag_time['first_reward_note']['time']|safe }}</b>
+                &nbsp;
+                <a href="http://www.jianshu.com/p/{{ first_tag_time['first_reward_note']['note_id']|safe }}" target="_blank">第一次打赏文章</a>
+            </p>
+        {% endif %}
+
+        </div>
+    </div>
+
+    <div class="section" id="tags_percent">
+        <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+        <div id="tags_chart" style="width:100%;height:600px;"></div>
+        <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('tags_chart'));
+
+            // 指定图表的配置项和数据
+
+            var option = {
+                title : {
+                    text: '用户动态类型',
+                    subtext: '数据来源: www.jianshu.com',
+                    x:'center'
+                },
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                clockwise:false,
+                legend: {
+                    orient: 'vertical',
+                    left: '10%',
+                    data: ['发表评论','喜欢文章','赞赏文章','发表文章','关注用户','关注专题','点赞评论','关注文集']
+                },
+                color:['#FF6666','#EFE42A','#64BD3D','#EE9201','#29AAE3',
+                '#B74AE5','#0AAF9F','#E89589'],
+                series : [
+                    {
+                        name: '动态类型',
+                        type: 'pie',
+                        radius : '75%',
+                        center: ['50%', '60%'],
+                        data:{{ tags_data|tojson }},
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 100,
+                                shadowOffsetX: 10,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+
+            //*必须，绑定图表自适应功能
+           window.onresize = function () {
+               myChart.resize();
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+
+        </script>
+    </div>
+
+    <div class="section" id="all_month">
+        <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+        <div id="monthline_chart" style="width:100%;height:600px;"></div>
+        <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart1 = echarts.init(document.getElementById('monthline_chart'));
+
+            // 指定图表的配置项和数据
+
+            var option = {
+
+                // Make gradient line here
+                visualMap: {
+                    show: false,
+                    type: 'continuous',
+                    seriesIndex: 0,
+                    color:['red','orange','yellow','lightskyblue']
+                },
+
+                title: {
+                    left: 'center',
+                    text: '各个月份的动态次数',
+                    subtext:'数据来源: www.jianshu.com'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                xAxis: {
+                    data: {{month_data['month_line']|tojson}},
+                    name:'月份'
+                },
+                yAxis: {
+                    splitLine: {show: false},
+                    name:'动态次数'
+                },
+                grid: {
+                    bottom: '6%',
+                    top: '10%'
+                },
+                series: {
+                    type: 'line',
+                    showSymbol: false,
+                    data: {{month_data['month_freqency']|tojson}},
+                    markPoint : {
+                        data : [
+                            {type : 'max',
+                            name: '最大值'
+                            }
+                            ]
+                                },
+                    markLine: {
+                        data: [
+                            {type: 'average', name: '平均值',
+                                label: {
+                                normal: {
+                                    position: 'end',
+                                    formatter: '月平均值:{c}'
+                                }
+                            }},
+                            {type: 'max', name: '最大值',
+                                                    label: {
+                            normal: {
+                                position: 'end',
+                                formatter: '最大值'
+                                }
+                            }}
+                        ]
+                    }
+                }
+            };
+            //*必须，绑定图表自适应功能
+           window.onresize = function () {
+               myChart1.resize();
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart1.setOption(option);
+
+        </script>
+    </div>
+
+    <div class="section" id="all_day">
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+        <div id="dayline_chart" style="width:100%;height:600px;"></div>
+        <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart2 = echarts.init(document.getElementById('dayline_chart'));
+
+            // 指定图表的配置项和数据
+
+            var option = {
+
+                // Make gradient line here
+                visualMap: {
+                    show: false,
+                    type: 'continuous',
+                    seriesIndex: 0,
+                    color:['red','orange','yellow','lightskyblue']
+                },
+
+                title: {
+                    left: 'center',
+                    text: '每天的动态次数(页内滚动鼠标或拖动下方进度条，可缩放数据)',
+                    subtext:'数据来源: www.jianshu.com'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                xAxis: {
+                    data: {{day_data['day_line']|tojson}},
+                    name:'日期'
+                },
+                yAxis: {
+                    splitLine: {show: false},
+                    name:'动态次数'
+                },
+                grid: {
+                    bottom: '10%',
+                    top: '12%'
+                },
+                series: {
+                    type: 'line',
+                    showSymbol: false,
+                    data: {{day_data['day_freqency']|tojson}}
+                },
+                dataZoom: [{
+                    type: 'slider',
+                    show:true,
+                    start: 0,
+                    end:100
+                },
+                    {
+                        type:'inside',
+                        start: 0,
+                        end:100
+                    }]
+            };
+            //*必须，绑定图表自适应功能
+           window.onresize = function () {
+               myChart2.resize();
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart2.setOption(option);
+
+        </script>
+    </div>
+
+    <div class="section" id="all_hour">
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+        <div id="hourline_chart" style="width:100%;height:600px;"></div>
+        <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart3 = echarts.init(document.getElementById('hourline_chart'));
+
+            // 指定图表的配置项和数据
+
+            var option = {
+
+                // Make gradient line here
+                visualMap: {
+                    show: false,
+                    type: 'continuous',
+                    seriesIndex: 0,
+                    smooth:true,
+                    color:['red','orange','yellow','lightskyblue']
+                },
+
+                title: {
+                    left: 'center',
+                    text: '一天中各时间点的动态次数(几点最活跃？)',
+                    subtext:'数据来源: www.jianshu.com'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                xAxis: {
+                    data: {{hour_data['hour_line']|tojson}},
+                    name:'时间（24小时制）'
+                },
+                yAxis: {
+                    splitLine: {show: false},
+                    name:'动态次数'
+                },
+                grid:{
+                    bottom: '6%',
+                    top: '10%'
+                },
+                series: {
+                    type: 'line',
+                    showSymbol: false,
+                    data: {{hour_data['hour_freqency']|tojson}}
+                }
+            };
+            //*必须，绑定图表自适应功能
+           window.onresize = function () {
+               myChart3.resize();
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart3.setOption(option);
+
+        </script>
+    </div>
+
+    <div class="section" id="all_week">
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+        <div id="weekline_chart" style="width:100%;height:600px;"></div>
+        <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart4 = echarts.init(document.getElementById('weekline_chart'));
+
+            // 指定图表的配置项和数据
+
+            var option = {
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                title: {
+                            left: 'center',
+                            text: '一周中的动态情况',
+                            subtext:'数据来源: www.jianshu.com'
+                        },
+                grid: {
+                    left: '7%',
+                    right: '8%',
+                    bottom: '8%'
+
+                },
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : {{ week_data['week_line']|tojson }},
+                        axisTick: {
+                            alignWithLabel: true
+                        }
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value',
+                        name:'动态次数'
+                    }
+                ],
+                series : [
+                    {
+                        name:'动态次数',
+                        type:'bar',
+                        barWidth: '50%',
+                        data:{{ week_data['week_freqency']|tojson }},
+                        itemStyle: {
+                            normal: {
+                                color: function(params) {
+                                　//首先定义一个数组
+                                var colorList = [
+                                '#C33531','#EFE42A','#64BD3D','#EE9201','#29AAE3',
+                                '#B74AE5','#0AAF9F','#E89589'
+                                ];
+                                return colorList[params.dataIndex]
+                                }
+                            }
+                        }
+                    }
+                ]
+            };
+
+            //*必须，绑定图表自适应功能
+           window.onresize = function () {
+               myChart4.resize();
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart4.setOption(option);
+
+        </script>
+    </div>
+
+    <div class="section" id="share_note_month">
+        <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+        <div id="share_month_chart" style="width:100%;height:600px;"></div>
+        <script type="text/javascript">
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('share_month_chart'));
+
+            // 指定图表的配置项和数据
+
+            var option = {
+
+                // Make gradient line here
+                visualMap: {
+                    show: false,
+                    type: 'continuous',
+                    seriesIndex: 0,
+                    color:['red','orange','yellow','lightskyblue']
+                },
+
+                title: {
+                    left: 'center',
+                    text: '各个月份的发表文章次数',
+                    subtext:'数据来源: www.jianshu.com'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                xAxis: {
+                    data: {{share_month_data['month_line']|tojson}},
+                    name:'月份'
+                },
+                yAxis: {
+                    splitLine: {show: false},
+                    name:'动态次数'
+                },
+                grid: {
+                    bottom: '6%',
+                    top: '10%'
+                },
+                series: {
+                    type: 'line',
+                    showSymbol: false,
+                    data: {{share_month_data['month_freqency']|tojson}},
+                    markPoint : {
+                        data : [
+                            {type : 'max',
+                            name: '最大值'
+                            }
+                            ]
+                                },
+                    markLine: {
+                        data: [
+                            {type: 'average', name: '平均值',
+                                label: {
+                                normal: {
+                                    position: 'end',
+                                    formatter: '月平均值:{c}'
+                                }
+                            }},
+                            {type: 'max', name: '最大值',
+                                                    label: {
+                            normal: {
+                                position: 'end',
+                                formatter: '最大值'
+                                }
+                            }}
+                        ]
+                    }
+                }
+            };
+            //*必须，绑定图表自适应功能
+           window.onresize = function () {
+               myChart.resize();
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+
+        </script>
+    </div>
+
+    {% if week_hour['share_notes'] %}
+        <div class="section" id="share_note_week_hour">
+        <div align="center">
+            <h4>一周中发表文章时间频率分布</h4>
+            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+            <div id="share_note_week_hour_chart" style="width:100%;height:580px;"></div>
+            <script type="text/javascript">
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('share_note_week_hour_chart'));
+
+                // 指定图表的配置项和数据
+
+                var hours = ['12am', '1am', '2am', '3am', '4am', '5am', '6am',
+                        '7am', '8am', '9am','10am','11am',
+                        '12pm', '1pm', '2pm', '3pm', '4pm', '5pm',
+                        '6pm', '7pm', '8pm', '9pm', '10pm', '11pm'];
+                var days = ['周一', '周二',
+                        '周三', '周四', '周五', '周六','周日'];
+
+                var data = {{ week_hour['share_notes'][1]|tojson }};
+
+                var option = {
+                    tooltip: {
+                        position: 'left'
+                    },
+                    title: [],
+                    color:['#FF6666','#EFE42A','#64BD3D','#EE9201','#29AAE3',
+                    '#B74AE5','#0AAF9F','#E89589'],
+                    singleAxis: [],
+                    series: []
+                };
+
+                echarts.util.each(days, function (day, idx) {
+                    option.title.push({
+                        textBaseline: 'middle',
+                        top: (idx + 0.5) * 100 / 7 + '%',
+                        text: day
+                    });
+                    option.singleAxis.push({
+                        left: 120,
+                        type: 'category',
+                        boundaryGap: false,
+                        data: hours,
+                        top: (idx * 100 / 7 + 5) + '%',
+                        height: (100 / 7 - 10) + '%',
+                        axisLabel: {
+                            interval: 2
+                        }
+                    });
+                    option.series.push({
+                        singleAxisIndex: idx,
+                        coordinateSystem: 'singleAxis',
+                        type: 'scatter',
+                        data: [],
+                        symbolSize: function (dataItem) {
+                            return dataItem[1]/{{ week_hour['share_notes'][0] }} * 100;
+                        }
+                    });
+                });
+
+                echarts.util.each(data, function (dataItem) {
+                    option.series[dataItem[0]].data.push([dataItem[1], dataItem[2]]);
+                });
+
+                //*必须，绑定图表自适应功能
+               window.onresize = function () {
+                   myChart.resize();
+                };
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+
+            </script>
+    </div>
+    </div>
+    {% endif %}
+
+    {% if week_hour['like_notes'] %}
+        <div class="section" id="like_note_week_hour">
+        <div align="center">
+            <h4>一周中喜欢文章时间频率分布</h4>
+            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+            <div id="like_note_week_hour_chart" style="width:100%;height:580px;"></div>
+            <script type="text/javascript">
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('like_note_week_hour_chart'));
+
+                // 指定图表的配置项和数据
+
+                var hours = ['12am', '1am', '2am', '3am', '4am', '5am', '6am',
+                        '7am', '8am', '9am','10am','11am',
+                        '12pm', '1pm', '2pm', '3pm', '4pm', '5pm',
+                        '6pm', '7pm', '8pm', '9pm', '10pm', '11pm'];
+                var days = ['周一', '周二',
+                        '周三', '周四', '周五', '周六','周日'];
+
+                var data = {{ week_hour['like_notes'][1]|tojson }};
+
+                var option = {
+                    tooltip: {
+                        position: 'left'
+                    },
+                    title: [],
+                    color:['#FF6666','#EFE42A','#64BD3D','#EE9201','#29AAE3',
+                    '#B74AE5','#0AAF9F','#E89589'],
+                    singleAxis: [],
+                    series: []
+                };
+
+                echarts.util.each(days, function (day, idx) {
+                    option.title.push({
+                        textBaseline: 'middle',
+                        top: (idx + 0.5) * 100 / 7 + '%',
+                        text: day
+                    });
+                    option.singleAxis.push({
+                        left: 120,
+                        type: 'category',
+                        boundaryGap: false,
+                        data: hours,
+                        top: (idx * 100 / 7 + 5) + '%',
+                        height: (100 / 7 - 10) + '%',
+                        axisLabel: {
+                            interval: 2
+                        }
+                    });
+                    option.series.push({
+                        singleAxisIndex: idx,
+                        coordinateSystem: 'singleAxis',
+                        type: 'scatter',
+                        data: [],
+                        symbolSize: function (dataItem) {
+                            return dataItem[1]/{{ week_hour['like_notes'][0] }} * 100;
+                        }
+                    });
+                });
+
+                echarts.util.each(data, function (dataItem) {
+                    option.series[dataItem[0]].data.push([dataItem[1], dataItem[2]]);
+                });
+
+                //*必须，绑定图表自适应功能
+               window.onresize = function () {
+                   myChart.resize();
+                };
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+
+            </script>
+    </div>
+    </div>
+    {% endif %}
+
+    {% if week_hour['like_users'] %}
+        <div class="section" id="like_user_week_hour">
+            <div align="center">
+            <h3>一周中关注用户时间频率分布</h3>
+            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+            <div id="like_user_week_hour_chart" style="width:100%;height:580px;"></div>
+            <script type="text/javascript">
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('like_user_week_hour_chart'));
+
+                // 指定图表的配置项和数据
+
+                var hours = ['12am', '1am', '2am', '3am', '4am', '5am', '6am',
+                        '7am', '8am', '9am','10am','11am',
+                        '12pm', '1pm', '2pm', '3pm', '4pm', '5pm',
+                        '6pm', '7pm', '8pm', '9pm', '10pm', '11pm'];
+                var days = ['周一', '周二',
+                        '周三', '周四', '周五', '周六','周日'];
+
+                var data = {{ week_hour['like_users'][1]|tojson }};
+
+                var option = {
+                        tooltip: {
+                            position: 'left'
+                        },
+                        title: [],
+                        color:['#FF6666','#EFE42A','#64BD3D','#EE9201','#29AAE3',
+                        '#B74AE5','#0AAF9F','#E89589'],
+                        singleAxis: [],
+                        series: []
+                    };
+
+                echarts.util.each(days, function (day, idx) {
+                    option.title.push({
+                        textBaseline: 'middle',
+                        top: (idx + 0.5) * 100 / 7 + '%',
+                        text: day
+                    });
+                    option.singleAxis.push({
+                        left: 120,
+                        type: 'category',
+                        boundaryGap: false,
+                        data: hours,
+                        top: (idx * 100 / 7 + 5) + '%',
+                        height: (100 / 7 - 10) + '%',
+                        axisLabel: {
+                            interval: 2
+                        }
+                    });
+                    option.series.push({
+                        singleAxisIndex: idx,
+                        coordinateSystem: 'singleAxis',
+                        type: 'scatter',
+                        data: [],
+                        symbolSize: function (dataItem) {
+                            return dataItem[1]/{{ week_hour['like_users'][0] }} * 100;
+                        }
+                    });
+                });
+
+                echarts.util.each(data, function (dataItem) {
+                    option.series[dataItem[0]].data.push([dataItem[1], dataItem[2]]);
+                });
+
+                //*必须，绑定图表自适应功能
+               window.onresize = function () {
+                   myChart.resize();
+                };
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+
+            </script>
+    </div>
+        </div>
+    {% endif %}
+
+    {% if week_hour['comment_notes'] %}
+        <div class="section" id="comment_note_week_hour">
+        <div align="center">
+            <h4>一周中发表评论时间频率分布</h4>
+            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+            <div id="comment_note_week_hour_chart" style="width:100%;height:580px;"></div>
+            <script type="text/javascript">
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('comment_note_week_hour_chart'));
+
+                // 指定图表的配置项和数据
+
+                var hours = ['12am', '1am', '2am', '3am', '4am', '5am', '6am',
+                        '7am', '8am', '9am','10am','11am',
+                        '12pm', '1pm', '2pm', '3pm', '4pm', '5pm',
+                        '6pm', '7pm', '8pm', '9pm', '10pm', '11pm'];
+                var days = ['周一', '周二',
+                        '周三', '周四', '周五', '周六','周日'];
+
+                var data = {{ week_hour['comment_notes'][1]|tojson }};
+
+                var option = {
+                    tooltip: {
+                        position: 'left'
+                    },
+                    title: [],
+                    color:['#FF6666','#EFE42A','#64BD3D','#EE9201','#29AAE3',
+                    '#B74AE5','#0AAF9F','#E89589'],
+                    singleAxis: [],
+                    series: []
+                };
+
+                echarts.util.each(days, function (day, idx) {
+                    option.title.push({
+                        textBaseline: 'middle',
+                        top: (idx + 0.5) * 100 / 7 + '%',
+                        text: day
+                    });
+                    option.singleAxis.push({
+                        left: 120,
+                        type: 'category',
+                        boundaryGap: false,
+                        data: hours,
+                        top: (idx * 100 / 7 + 5) + '%',
+                        height: (100 / 7 - 10) + '%',
+                        axisLabel: {
+                            interval: 2
+                        }
+                    });
+                    option.series.push({
+                        singleAxisIndex: idx,
+                        coordinateSystem: 'singleAxis',
+                        type: 'scatter',
+                        data: [],
+                        symbolSize: function (dataItem) {
+                            return dataItem[1]/{{ week_hour['comment_notes'][0] }} * 100;
+                        }
+                    });
+                });
+
+                echarts.util.each(data, function (dataItem) {
+                    option.series[dataItem[0]].data.push([dataItem[1], dataItem[2]]);
+                });
+
+                //*必须，绑定图表自适应功能
+               window.onresize = function () {
+                   myChart.resize();
+                };
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+
+            </script>
+    </div>
+    </div>
+    {% endif %}
+
+    {% if week_hour['reward_notes'] %}
+        <div class="section" id="reward_note_week_hour">
+        <div align="center">
+            <h4>一周中打赏时间频率分布</h4>
+            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+            <div id="reward_note_week_hour_chart" style="width:100%;height:580px;"></div>
+            <script type="text/javascript">
+                // 基于准备好的dom，初始化echarts实例
+                var myChart = echarts.init(document.getElementById('reward_note_week_hour_chart'));
+
+                // 指定图表的配置项和数据
+
+                var hours = ['12am', '1am', '2am', '3am', '4am', '5am', '6am',
+                        '7am', '8am', '9am','10am','11am',
+                        '12pm', '1pm', '2pm', '3pm', '4pm', '5pm',
+                        '6pm', '7pm', '8pm', '9pm', '10pm', '11pm'];
+                var days = ['周一', '周二',
+                        '周三', '周四', '周五', '周六','周日'];
+
+                var data = {{ week_hour['reward_notes'][1]|tojson }};
+
+                var option = {
+                    tooltip: {
+                        position: 'left'
+                    },
+                    title: [],
+                    color:['#FF6666','#EFE42A','#64BD3D','#EE9201','#29AAE3',
+                    '#B74AE5','#0AAF9F','#E89589'],
+                    singleAxis: [],
+                    series: []
+                };
+
+                echarts.util.each(days, function (day, idx) {
+                    option.title.push({
+                        textBaseline: 'middle',
+                        top: (idx + 0.5) * 100 / 7 + '%',
+                        text: day
+                    });
+                    option.singleAxis.push({
+                        left: 120,
+                        type: 'category',
+                        boundaryGap: false,
+                        data: hours,
+                        top: (idx * 100 / 7 + 5) + '%',
+                        height: (100 / 7 - 10) + '%',
+                        axisLabel: {
+                            interval: 2
+                        }
+                    });
+                    option.series.push({
+                        singleAxisIndex: idx,
+                        coordinateSystem: 'singleAxis',
+                        type: 'scatter',
+                        data: [],
+                        symbolSize: function (dataItem) {
+                            return dataItem[1]/{{ week_hour['reward_notes'][0] }} * 100;
+                        }
+                    });
+                });
+
+                echarts.util.each(data, function (dataItem) {
+                    option.series[dataItem[0]].data.push([dataItem[1], dataItem[2]]);
+                });
+
+                //*必须，绑定图表自适应功能
+               window.onresize = function () {
+                   myChart.resize();
+                };
+
+                // 使用刚指定的配置项和数据显示图表。
+                myChart.setOption(option);
+
+            </script>
+    </div>
+    </div>
+    {% endif %}
+
+    <div class="section" id="comment_cloud">
+        <div align="center">
+            <h3>共写下评论 {{ comments_num }} 条，以下词语出现频率较高</h3>
+            {{ wordcloud_chart|safe }}
+        </div>
+    </div>
+
+    <div class="section" id="end">
+        <div align="center">
+            <p style="font-size:72px;color:#FA8072;">谢谢观赏</p>
+            <p style="font-size:32px;color:#FA8072">----------end----------</p>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
